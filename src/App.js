@@ -1,7 +1,7 @@
-import MyComponet from "./MyComponent";
+import Counter from "./Counter";
 
 const App = () => {
-  return <MyComponet>리액트</MyComponet>;
+  return <Counter />;
 };
 
 export default App;
