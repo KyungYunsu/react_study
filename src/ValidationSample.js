@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./ValidationSample.css";
-
+//아니 씨발 뭐가 문제고?
 class ValidationSample extends Component {
   state = {
     password: "",
