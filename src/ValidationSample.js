@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./ValidationSample.css";
-//아니 씨발 뭐가 문제고?
+
 class ValidationSample extends Component {
   state = {
     password: "",
@@ -18,12 +18,14 @@ class ValidationSample extends Component {
       clicked: true,
       validated: this.state.password === "0000",
     });
+    this.input.focus();
   };
 
   render() {
     return (
       <div>
         <input
+          ref={(ref) => (this.input = ref)}
           type="password"
           value={this.state.password}
           onChange={this.handleChange}
