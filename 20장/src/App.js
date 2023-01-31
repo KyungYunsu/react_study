@@ -3,6 +3,7 @@ import Menu from "./components/Menu";
 import RedPage from "./pages/RedPage";
 import BluePage from "./pages/BluePage";
 
+//commit 목적 변경
 const App = () => {
   return (
     <div>
