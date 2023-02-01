@@ -124,7 +124,7 @@ module.exports = {
           // url-loader 를 위한 설정
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-            loader: require.resolve("url-loader"),
+            loader: require.resolve("resolve-url-loader"),
             options: {
               emitFile: false, // 파일을 따로 저장하지 않는 옵션
               limit: 10000, // 원래는 9.76KB가 넘어가면 파일로 저장하는데
