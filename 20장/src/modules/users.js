@@ -5,7 +5,7 @@ const GET_USERS_SUCCESS = "users/GET_USERS_SUCCESS";
 const GET_USERS_FAILURE = "users/GET_USERS_FAILURE";
 
 const getUsersPending = () => ({ type: GET_USERS_PENDING });
-const getUsersSuccess = (payload) => ({ type: GET_USERS_SUCCESS });
+const getUsersSuccess = (payload) => ({ type: GET_USERS_SUCCESS, payload });
 const getUsersFailure = (payload) => ({
   type: GET_USERS_FAILURE,
   error: true,
@@ -41,7 +41,11 @@ const initialState = {
 function users(state = initialState, action) {
   switch (action.type) {
     case GET_USERS_PENDING:
-      return { ...state, loading: { ...state.loading, users: true } };
+      return {
+        ...state,
+        loading: { ...state.loading, users: true },
+        error: { ...state.error, users: null },
+      };
     case GET_USERS_SUCCESS:
       return {
         ...state,
