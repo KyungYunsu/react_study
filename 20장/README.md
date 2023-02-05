@@ -1,3 +1,5 @@
-#필요 작업 \n
-yarn build \n
+#필요 작업
+
+yarn build
+
 yarn add redux react-redux redux-thunk axios
