@@ -8,7 +8,7 @@ const UsersContainer = () => {
   const users = useSelector((state) => state.users.users);
   const dispatch = useDispatch();
 
-  // 컴포넌트가 마운트되고 나서 호출
+  // 컴포넌트가 마운트 되고 나서 호출
   useEffect(() => {
     if (users) return; // users가 이미 유효하다면 요청하지 않음.
     dispatch(getUsers());
