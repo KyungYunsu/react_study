@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Menu from "./components/Menu";
 import RedPage from "./pages/RedPage";
 import BluePage from "./pages/BluePage";
+import UsersPage from "./pages/UsersPage";
 
 //commit 목적 변경
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/red" element={<RedPage />} />
         <Route path="/blue" element={<BluePage />} />
+        <Route path="/users/*" element={<UsersPage />} />
       </Routes>
     </div>
   );

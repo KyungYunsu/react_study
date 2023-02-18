@@ -6,12 +6,19 @@ import App from "./App";
 import path from "path";
 import fs from "fs";
 
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import thunk from "redux-thunk";
+import rootReducer from "./modules";
+
+import PreloadContext from "./lib/PreloadContext";
+
 // asset-manifest.json에서 파일 경로들을 조회합니다.
 const manifest = JSON.parse(
   fs.readFileSync(path.resolve("./build/asset-manifest.json"), "utf-8")
 );
 
-function createPage(root, tags) {
+function createPage(root, stateScript) {
   return `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -29,6 +36,7 @@ function createPage(root, tags) {
       <noscript>You need to enable JavaScript to run this app.</noscript>
       <div id="root">
         ${root}
+        ${stateScript}
       </div>
       <script src="${manifest.files["main.js"]}"></script>
     </body>
@@ -39,16 +47,38 @@ function createPage(root, tags) {
 const app = express();
 
 // 서버 사이드 랜더링을 처리할 핸들러 함수.
-const serverRender = (req, res, next) => {
+const serverRender = async (req, res, next) => {
   // 이 함수는 404가 떠야 할 상황에 404를 띄우지 않고 서버 사이드 랜더링 실행
   const context = {};
+  const store = createStore(rootReducer, applyMiddleware(thunk));
+
+  const preloadContext = {
+    done: false,
+    promises: [],
+  };
   const jsx = (
-    <StaticRouter location={req.url} context={context}>
-      <App />
-    </StaticRouter>
+    <PreloadContext.Provider value={preloadContext}>
+      <Provider store={store}>
+        <StaticRouter location={req.url} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    </PreloadContext.Provider>
   );
+
+  ReactDOMServer.renderToStaticMarkup(jsx);
+  try {
+    await Promise.all(preloadContext.promises); // 모든 프로미스를 기다립니다.
+  } catch (e) {
+    return res.staus(500);
+  }
+
+  preloadContext.done = true;
   const root = ReactDOMServer.renderToString(jsx); //랜더링을 하고
-  res.send(createPage(root)); // 클라이언트에 결과물 응답
+  const stateString = JSON.stringify(store.getState()).replace(/</g, "\\u003c");
+  const stateScript = `<script>__PRELOADED_STATE__ = ${stateString}</script>`; // 리덕스 초기 상태를 스크립트로 주입합니다.
+
+  res.send(createPage(root, stateScript)); // 클라이언트에 결과물 응답
 };
 
 const serve = express.static(path.resolve("./build"), {
